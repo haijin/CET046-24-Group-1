@@ -5,7 +5,8 @@ import numpy as np
 import textblob
 
 model = genai.GenerativeModel("gemini-1.5-flash")
-api = os.getenv("MAKERSUITE")
+##api = os.getenv("MAKERSUITE")
+api = 'AIzaSyB4mcXssvqksJlPhVaAkHBfCu-K76X0k1M'
 genai.configure(api_key=api)
 
 app = Flask(__name__)
