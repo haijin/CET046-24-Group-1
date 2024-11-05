@@ -26,17 +26,22 @@
         <table>
             <tr>
                 <th>Stock Code</th>
+                <th>Stock Name</th>
                 <th>Latest Price</th>
                 <th>Details</th>
             </tr>
             {% for row in stock_data %}
                 <tr>
                     <td>{{ row["Stock Code"] }}</td>
+                    <td>{{ row["Stock Name"] }}</td>
                     <td>{{ row["Latest Price"] }}</td>
                     <td><a href="{{ url_for('stock_detail', stock_code=row['Stock Code']) }}">View Details</a></td>
                 </tr>
             {% endfor %}
         </table>
+    </div>
+    <div style="text-align: center; margin-top: 20px; font-size: medium;">
+        <a href="{{ url_for('stockquery') }}">Manual Input Stock Code</a>
     </div>
     <form action="/" method="post">
         <p><input type="submit" value="Main"></p>

@@ -78,10 +78,11 @@ def get_stock_prices(stock_codes):
     for code in stock_codes:
         stock = yf.Ticker(code)
         stock_info = stock.history(period="1d")
-        
+        info = stock.info
         if not stock_info.empty:
             latest_price = stock_info["Close"].iloc[-1]
-            stock_data.append({"Stock Code": code, "Latest Price": latest_price})
+            longName = info.get("longName")
+            stock_data.append({"Stock Code": code ,"Stock Name": longName,"Latest Price": latest_price})
         else:
             stock_data.append({"Stock Code": code, "Latest Price": "N/A"})
     
