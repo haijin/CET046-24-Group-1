@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ stock_code }} - Financial Metrics</title>
+    <style>
+        table {
+            width: 50%;
+            margin: 50px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Financial Metrics for {{ stock_code }}</h2>
+    <table>
+        <tr><th>Metric</th><th>Value</th></tr>
+        {% for metric, value in metrics.items() %}
+            <tr>
+                <td>{{ metric }}</td>
+                <td>{{ value if value is not none else "N/A" }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="{{ url_for('shareprice') }}">Back to Stock List</a>
+    </div>
+</body>
+</html>
