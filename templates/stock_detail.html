@@ -32,6 +32,25 @@
         {% endfor %}
     </table>
     <div style="text-align: center; margin-top: 20px;">
+
+        {% if Market_Analaysis %}
+        <ul>
+            {% for article in Market_Analaysis %}
+                <li>
+                    <strong>{{ article.title }}</strong><br>
+                    <em>Published at: {{ article.published_at }}</em><br>
+                    <p>{{ article.description }}</p>
+                    <a href="{{ article.url }}" target="_blank">Read More</a>
+                    <hr>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No news found for.</p>
+    {% endif %}
+
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
         <a href="{{ url_for('shareprice') }}">Back to Stock List</a>
     </div>
 </body>

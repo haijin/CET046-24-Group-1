@@ -4,9 +4,10 @@ import os
 import numpy as np
 import textblob
 
-from flask_mysqldb import MySQL
 import yfinance as yf
 import pandas as pd
+import requests
+from datetime import datetime
 
 model = genai.GenerativeModel("gemini-1.5-flash")
 ##api = os.getenv("MAKERSUITE")
@@ -92,14 +93,15 @@ def get_stock_prices(stock_codes):
 def stock_query():
     stock_code = request.form.get("stock_code")
     financial_metrics = get_stock_metrics(stock_code)
-    r = model.generate_content("current market sentiment for Apple stock price")
+   ## r = model.generate_content("current market sentiment for Apple stock price")
+    r = get_bing_news(financial_metrics.get("Company"))
     return render_template("stock_detail.html", stock_code=stock_code, metrics=financial_metrics, Market_Analaysis=r )
 
 @app.route("/stock/<stock_code>")
 def stock_detail(stock_code):
     # Get key financial metrics for the stock
     financial_metrics = get_stock_metrics(stock_code)
-    r = model.generate_content("current market sentiment for Apple stock price")
+    r = get_bing_news(financial_metrics.get("Company"))
     return render_template("stock_detail.html", stock_code=stock_code, metrics=financial_metrics, Market_Analaysis=r )
 
 
@@ -127,6 +129,51 @@ def get_stock_metrics(stock_code):
 def stockquery():
     return(render_template("stock_query.html"))
 
+# Function to fetch the latest news for a company using Bing News API
+def get_bing_news(query, count=5):
+    API_KEY = 'cce57137ec4647dc980eec2d23a236db'
+    ENDPOINT = 'https://api.bing.microsoft.com/v7.0/news/search'
+    headers = {
+        'Ocp-Apim-Subscription-Key': API_KEY
+    }
+    
+    params = {
+        'q': query,              # The company name or query you want to search for
+        'count': count,          # Number of articles you want to fetch
+        'freshness': 'Week',     # Filter articles by freshness: 'Day', 'Week', or 'Month'
+        'textFormat': 'Raw',     # Raw text format for response
+        'mkt': 'en-US'           # Market (region) - English (US) in this case
+    }
+    
+    response = requests.get(ENDPOINT, headers=headers, params=params)
+    
+    if response.status_code == 200:
+        news_data = response.json()
+        articles = news_data.get('value', [])
+        
+        if not articles:
+            return None
+        
+        # Prepare the articles to display
+        formatted_articles = []
+        for article in articles:
+            title = article.get('name', 'No title')
+            description = article.get('description', 'No description')
+            url = article.get('url', '#')
+            published_at = article.get('datePublished', '')
+           # published_at = datetime.strptime(published_at, "%Y-%m-%dT%H:%M:%SZ") if published_at else "Unknown time"
+            
+            formatted_articles.append({
+                'title': title,
+                'published_at': published_at,
+                'description': description,
+                'url': url
+            })
+        
+        return formatted_articles
+    else:
+        return None
+    
 
 if __name__ == "__main__":
     app.run()
