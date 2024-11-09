@@ -3,4 +3,4 @@ gunicorn
 google-generativeai
 numpy
 textblob
-
+yfinance
